@@ -1,0 +1,2013 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>生日天赋测试小程序预览</title>
+    <style>
+:root {
+  --ink: #fff6dc;
+  --muted: #cbbca1;
+  --dim: #8f806b;
+  --line: rgba(242, 199, 111, 0.22);
+  --panel: rgba(18, 24, 48, 0.74);
+  --deep: #0b1021;
+  --deep-2: #160f1f;
+  --gold: #f2c76f;
+  --gold-2: #c98a38;
+  --aqua: #7bd1bf;
+  --violet: #b1589a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ink);
+  background: linear-gradient(180deg, #101735 0%, var(--deep) 42%, var(--deep-2) 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 50% 10%, rgba(242, 199, 111, 0.18) 0 8%, transparent 30%),
+    radial-gradient(circle at 12% 22%, rgba(123, 209, 191, 0.16) 0 12%, transparent 34%),
+    radial-gradient(circle at 90% 8%, rgba(177, 88, 154, 0.16) 0 14%, transparent 36%);
+}
+
+body::after {
+  background-image:
+    radial-gradient(circle, rgba(255, 241, 201, 0.95) 0 1px, transparent 2px),
+    radial-gradient(circle, rgba(123, 209, 191, 0.72) 0 1px, transparent 2px);
+  background-position: 10px 18px, 48px 60px;
+  background-size: 66px 66px, 94px 94px;
+  opacity: 0.34;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 900px);
+  margin: 0 auto;
+  padding: 34px 18px 64px;
+}
+
+.hero {
+  padding: 10px 2px 0;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid rgba(242, 199, 111, 0.35);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(11, 16, 33, 0.62);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+h1 {
+  max-width: 700px;
+  margin: 24px 0 0;
+  color: var(--ink);
+  font-size: clamp(42px, 8vw, 72px);
+  line-height: 1.05;
+  letter-spacing: 0;
+  text-shadow: 0 16px 48px rgba(242, 199, 111, 0.22);
+}
+
+.subcopy {
+  max-width: 680px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.hero-metrics div {
+  min-height: 74px;
+  padding: 14px 12px;
+  border: 1px solid rgba(242, 199, 111, 0.22);
+  border-radius: 14px;
+  background:
+    linear-gradient(160deg, rgba(242, 199, 111, 0.12), rgba(177, 88, 154, 0.08)),
+    rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 32px rgba(242, 199, 111, 0.08);
+  text-align: center;
+}
+
+.hero-metrics strong,
+.hero-metrics span {
+  display: block;
+}
+
+.hero-metrics strong {
+  color: var(--gold);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.hero-metrics span {
+  margin-top: 9px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.astro-stage {
+  margin: 26px auto 0;
+  padding: 6px 0 4px;
+}
+
+.zodiac-wheel {
+  position: relative;
+  width: min(440px, 72vw);
+  height: min(440px, 72vw);
+  margin: 0 auto;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 235, 176, 0.18) 0 6%, transparent 7%),
+    conic-gradient(from 20deg, rgba(242, 199, 111, 0.24), rgba(123, 209, 191, 0.08), rgba(177, 88, 154, 0.16), rgba(242, 199, 111, 0.24));
+  box-shadow:
+    inset 0 0 42px rgba(242, 199, 111, 0.16),
+    0 0 80px rgba(123, 209, 191, 0.14);
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(242, 199, 111, 0.32);
+}
+
+.ring.outer {
+  inset: 0;
+  border-width: 2px;
+}
+
+.ring.middle {
+  inset: 14%;
+  border-color: rgba(123, 209, 191, 0.34);
+}
+
+.ring.inner {
+  inset: 30%;
+  border-color: rgba(255, 246, 220, 0.24);
+}
+
+.axis {
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  width: 1px;
+  height: 88%;
+  background: linear-gradient(180deg, transparent, rgba(242, 199, 111, 0.42), transparent);
+  transform-origin: center;
+}
+
+.axis.two {
+  transform: rotate(60deg);
+}
+
+.axis.three {
+  transform: rotate(120deg);
+}
+
+.point {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff1c9;
+  box-shadow: 0 0 18px rgba(255, 241, 201, 0.95);
+}
+
+.p1 {
+  left: 22%;
+  top: 21%;
+}
+
+.p2 {
+  right: 18%;
+  top: 31%;
+}
+
+.p3 {
+  left: 30%;
+  bottom: 20%;
+}
+
+.p4 {
+  right: 31%;
+  bottom: 27%;
+}
+
+.moon,
+.sun {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  left: 50%;
+  top: 50%;
+  width: 25%;
+  height: 25%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  color: var(--gold);
+  background: rgba(11, 16, 33, 0.68);
+  font-size: clamp(44px, 10vw, 68px);
+  box-shadow: 0 0 40px rgba(242, 199, 111, 0.2);
+}
+
+.sun {
+  width: 12%;
+  height: 12%;
+  transform: translate(100%, -270%);
+  color: var(--aqua);
+  background: transparent;
+  font-size: 34px;
+  box-shadow: none;
+}
+
+.stage-copy {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.stage-copy span {
+  min-height: 42px;
+  padding: 10px;
+  border: 1px solid rgba(242, 199, 111, 0.2);
+  border-radius: 12px;
+  color: #ead6aa;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background:
+    linear-gradient(160deg, rgba(242, 199, 111, 0.1), rgba(18, 24, 48, 0.78) 52%, rgba(177, 88, 154, 0.08)),
+    var(--panel);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+}
+
+.input-panel {
+  margin-top: 28px;
+  padding: 22px;
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  color: #ead6aa;
+  font-weight: 900;
+}
+
+.input-line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
+input {
+  min-height: 58px;
+  width: 100%;
+  padding: 0 16px;
+  border: 1px solid rgba(242, 199, 111, 0.24);
+  border-radius: 14px;
+  color: var(--ink);
+  background: rgba(5, 8, 18, 0.42);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+input::-webkit-calendar-picker-indicator {
+  filter: invert(1) sepia(0.4) saturate(1.8);
+}
+
+#generate {
+  min-height: 58px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 14px;
+  color: #22150a;
+  background: linear-gradient(135deg, #ffe3a0, var(--gold) 48%, var(--gold-2));
+  box-shadow: 0 24px 44px rgba(242, 199, 111, 0.22);
+  font-weight: 900;
+}
+
+.safe-note {
+  margin: 16px 0 0;
+  color: #b8a88f;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.report {
+  margin-top: 40px;
+}
+
+.report-head {
+  position: relative;
+  padding: 4px 2px;
+}
+
+.report-sigil {
+  position: absolute;
+  right: 4px;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+  color: var(--gold);
+}
+
+.report-sigil span,
+.report-sigil::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(242, 199, 111, 0.34);
+  border-radius: 50%;
+  box-shadow: 0 0 34px rgba(242, 199, 111, 0.12);
+}
+
+.report-sigil::before {
+  inset: 14px;
+  border-color: rgba(123, 209, 191, 0.32);
+}
+
+.report-sigil strong {
+  position: relative;
+  font-size: 34px;
+}
+
+h2 {
+  max-width: calc(100% - 100px);
+  margin: 24px 0 0;
+  color: var(--ink);
+  font-size: clamp(34px, 6vw, 56px);
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-shadow: 0 14px 44px rgba(242, 199, 111, 0.18);
+}
+
+.archetype {
+  margin: 12px 0 0;
+  color: var(--gold);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.overview {
+  max-width: 760px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.secondary {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(242, 199, 111, 0.3);
+  border-radius: 12px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 900;
+}
+
+.fit-dashboard {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 18px;
+  align-items: center;
+  margin-top: 26px;
+  padding: 22px;
+  border-color: rgba(242, 199, 111, 0.3);
+  background:
+    radial-gradient(circle at 12% 20%, rgba(242, 199, 111, 0.18), transparent 36%),
+    linear-gradient(135deg, rgba(242, 199, 111, 0.12), rgba(177, 88, 154, 0.12)),
+    rgba(18, 24, 48, 0.78);
+}
+
+.fit-main {
+  display: grid;
+  place-items: center;
+  min-height: 138px;
+  border: 2px solid rgba(242, 199, 111, 0.34);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 36px rgba(242, 199, 111, 0.12),
+    0 0 40px rgba(242, 199, 111, 0.12);
+}
+
+.fit-main strong {
+  color: var(--gold);
+  font-size: 56px;
+  line-height: 0.9;
+}
+
+.fit-main span {
+  color: #ead6aa;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.fit-dashboard p {
+  margin: 0;
+  color: #d7c6a8;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.model-notice {
+  margin-top: 14px;
+  padding: 14px 16px;
+  color: #ead6aa;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.feature-chip {
+  min-height: 52px;
+  padding: 13px;
+  border: 1px solid rgba(242, 199, 111, 0.22);
+  border-radius: 14px;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(242, 199, 111, 0.12), rgba(177, 88, 154, 0.08)),
+    rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.signal-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.signal-card {
+  padding: 18px;
+  border-color: rgba(242, 199, 111, 0.2);
+}
+
+.signal-title {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.signal-value {
+  margin-top: 8px;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.signal-card p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.58;
+}
+
+h3 {
+  margin: 36px 0 14px;
+  color: var(--ink);
+  font-size: 22px;
+  letter-spacing: 0;
+}
+
+h3::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 14px rgba(242, 199, 111, 0.74);
+  vertical-align: 3px;
+}
+
+.score-list {
+  padding: 20px;
+}
+
+.score-row + .score-row {
+  margin-top: 16px;
+}
+
+.score-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  color: #ead6aa;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.score-track {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.score-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--violet), var(--gold) 55%, var(--aqua));
+  box-shadow: 0 0 18px rgba(242, 199, 111, 0.28);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.talent-card,
+.career-card,
+.text-panel {
+  padding: 20px;
+}
+
+.talent-top,
+.career-rank {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.career-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.career-fit {
+  padding: 6px 10px;
+  border: 1px solid rgba(242, 199, 111, 0.3);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(242, 199, 111, 0.1);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.talent-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.talent-card h4,
+.career-card h4 {
+  margin: 10px 0 0;
+  color: var(--ink);
+  font-size: 19px;
+  line-height: 1.25;
+}
+
+.talent-card p,
+.career-card p,
+.text-panel {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.68;
+}
+
+.career-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.role-list,
+.keyword-list,
+.track-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.role-list span,
+.keyword-list span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #241807;
+  background: rgba(242, 199, 111, 0.84);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.track-list span {
+  padding: 7px 10px;
+  border: 1px solid rgba(177, 88, 154, 0.28);
+  border-radius: 999px;
+  color: var(--ink);
+  background: rgba(177, 88, 154, 0.22);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.next {
+  color: #ead6aa;
+  font-weight: 800;
+}
+
+.proof {
+  color: #ead6aa;
+  font-weight: 800;
+}
+
+.plan-list {
+  padding: 6px 20px;
+}
+
+.plan-item {
+  padding: 18px 0;
+}
+
+.plan-item + .plan-item {
+  border-top: 1px solid rgba(242, 199, 111, 0.16);
+}
+
+.plan-period {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.plan-title {
+  margin: 7px 0 0;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.plan-detail {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.keyword-list {
+  padding: 18px;
+}
+
+.premium-panel {
+  padding: 20px;
+  border-color: rgba(242, 199, 111, 0.32);
+}
+
+.premium-head {
+  display: flex;
+  justify-content: space-between;
+  color: var(--gold);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.premium-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.premium-list span {
+  padding: 14px;
+  border-radius: 12px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 14px;
+  line-height: 1.58;
+}
+
+.prompt-list {
+  display: grid;
+  gap: 10px;
+}
+
+.prompt-item {
+  padding: 16px 18px;
+  border-left: 4px solid var(--gold);
+  border-radius: 12px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+@media (max-width: 720px) {
+  .app {
+    padding-inline: 16px;
+  }
+
+  .input-line,
+  .grid,
+  .career-list,
+  .stage-copy,
+  .hero-metrics,
+  .feature-grid,
+  .signal-list,
+  .fit-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  #generate {
+    width: 100%;
+  }
+
+  .report-sigil {
+    position: relative;
+    right: auto;
+    top: auto;
+    margin-top: 18px;
+  }
+
+  h2 {
+    max-width: none;
+  }
+}
+
+</style>
+  </head>
+  <body>
+    <div class="sky" aria-hidden="true"></div>
+    <main class="app">
+      <section class="hero">
+        <p class="eyebrow">BIRTH CHART READING</p>
+        <h1>解读你的本命天赋与事业方向</h1>
+        <p class="subcopy">输入出生日期，生成一份适合大众阅读的个人报告：天赋底色、事业倾向、潜力行业、成长路径与可继续追问的问题。</p>
+      </section>
+
+      <section class="hero-metrics" aria-label="产品特点">
+        <div>
+          <strong>本命</strong>
+          <span>天赋画像</span>
+        </div>
+        <div>
+          <strong>事业</strong>
+          <span>方向适配</span>
+        </div>
+        <div>
+          <strong>追问</strong>
+          <span>继续解读</span>
+        </div>
+      </section>
+
+      <section class="astro-stage" aria-hidden="true">
+        <div class="zodiac-wheel">
+          <span class="ring outer"></span>
+          <span class="ring middle"></span>
+          <span class="ring inner"></span>
+          <span class="axis one"></span>
+          <span class="axis two"></span>
+          <span class="axis three"></span>
+          <span class="point p1"></span>
+          <span class="point p2"></span>
+          <span class="point p3"></span>
+          <span class="point p4"></span>
+          <span class="moon">☾</span>
+          <span class="sun">✦</span>
+        </div>
+        <div class="stage-copy">
+          <span>本命天赋</span>
+          <span>事业适配</span>
+          <span>深度报告</span>
+        </div>
+      </section>
+
+      <section class="input-panel panel">
+        <label for="birthday">出生日期</label>
+        <div class="input-line">
+          <input id="birthday" type="date" min="1900-01-01">
+          <button id="generate" type="button">生成我的天赋报告</button>
+        </div>
+        <p class="safe-note">本测试用于自我探索和娱乐参考，不会决定你的命运或职业上限。</p>
+      </section>
+
+      <section id="report" class="report" hidden>
+        <div class="report-head">
+          <p id="reportDate" class="eyebrow"></p>
+          <div class="report-sigil" aria-hidden="true">
+            <span></span>
+            <strong id="lifeNumber"></strong>
+          </div>
+          <h2 id="reportTitle"></h2>
+          <p id="reportArchetype" class="archetype"></p>
+          <p id="reportOverview" class="overview"></p>
+          <div class="button-row">
+            <button id="copy" type="button" class="secondary">复制摘要</button>
+            <button id="reset" type="button" class="secondary">重新测试</button>
+          </div>
+        </div>
+
+        <div class="fit-dashboard panel">
+          <div class="fit-main">
+            <strong id="fitScore"></strong>
+            <span>契合提示</span>
+          </div>
+          <p id="positioning"></p>
+        </div>
+
+        <div id="modelNotice" class="model-notice panel" hidden></div>
+
+        <div id="features" class="feature-grid"></div>
+
+        <h3>解读依据</h3>
+        <div id="signals" class="signal-list"></div>
+
+        <h3>星象天赋雷达</h3>
+        <div id="scores" class="score-list panel"></div>
+
+        <h3>三项主天赋</h3>
+        <div id="talents" class="grid"></div>
+
+        <h3>未来发展方向</h3>
+        <div id="careers" class="career-list"></div>
+
+        <h3>可以留意的方向</h3>
+        <div id="marketTracks" class="keyword-list panel"></div>
+
+        <h3 id="yearTitle"></h3>
+        <div id="yearAdvice" class="text-panel panel"></div>
+
+        <h3>成长行动路径</h3>
+        <div id="plan" class="plan-list panel"></div>
+
+        <h3>表达关键词</h3>
+        <div id="keywords" class="keyword-list panel"></div>
+
+        <h3 id="premiumTitle"></h3>
+        <div class="premium-panel panel">
+          <div class="premium-head">
+            <span>继续看下去</span>
+            <strong id="premiumPrice"></strong>
+          </div>
+          <div id="premiumPoints" class="premium-list"></div>
+        </div>
+
+        <h3>需要避开的盲点</h3>
+        <div id="blindSpot" class="text-panel panel"></div>
+
+        <h3>可以继续追问</h3>
+        <div id="prompts" class="prompt-list"></div>
+
+        <p id="disclaimer" class="safe-note"></p>
+      </section>
+    </main>
+
+    <script>
+(function (root, factory) {
+  var api = factory();
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+  if (typeof window !== "undefined") {
+    window.BirthdayTalent = api;
+  }
+})(this, function () {
+  var ZODIACS = [
+    {
+      name: "白羊座",
+      start: 321,
+      end: 419,
+      element: "火象",
+      archetype: "开局者",
+      headline: "先行动，再校准",
+      summary: "你身上有一种很直接的启动感。遇到事情时，你往往不喜欢一直等别人给答案，更愿意先往前试一步，再根据反馈调整。",
+      risk: "有时候你会太急着把事情推起来，反而忘了停下来听听自己的真实感受。重要决定前，给自己留一点缓冲，会更稳。",
+      clusters: ["growth", "entrepreneurship", "product"],
+      keywords: ["主动性", "破局", "快节奏", "竞争感"]
+    },
+    {
+      name: "金牛座",
+      start: 420,
+      end: 520,
+      element: "土象",
+      archetype: "稳定建造者",
+      headline: "把资源变成长期价值",
+      summary: "你对安全感、品质和长期回报比较敏感。比起一时热闹，你更在意一件事能不能慢慢积累，最后变成真正属于自己的底气。",
+      risk: "你可能会因为想等到更确定再开始，而错过一些窗口。先做一个小尝试，往往比反复犹豫更能帮你看清方向。",
+      clusters: ["operations", "finance", "design"],
+      keywords: ["稳定", "审美", "资产感", "长期主义"]
+    },
+    {
+      name: "双子座",
+      start: 521,
+      end: 621,
+      element: "风象",
+      archetype: "信息连接者",
+      headline: "把信息变成机会",
+      summary: "你的脑子通常转得很快，也容易被新的信息、观点和人吸引。你不只是接收信息，更擅长把不同东西串起来，讲出一个新的角度。",
+      risk: "兴趣多是你的天赋，也可能让你分散。把想法固定成文章、作品、方案或记录，会让别人更容易看见你的价值。",
+      clusters: ["content", "education", "product"],
+      keywords: ["表达", "学习力", "连接", "多线程"]
+    },
+    {
+      name: "巨蟹座",
+      start: 622,
+      end: 722,
+      element: "水象",
+      archetype: "情绪洞察者",
+      headline: "看见人的真实需要",
+      summary: "你很容易感受到气氛的变化，也常常能察觉别人没说出口的需要。你不是只看事情本身，也会在意人为什么会这样想、这样做。",
+      risk: "你容易把别人的情绪也放进心里。学会分清“我能帮助什么”和“这不是我一个人的责任”，会让你更轻松。",
+      clusters: ["people", "research", "design"],
+      keywords: ["共情", "照护", "安全感", "体验"]
+    },
+    {
+      name: "狮子座",
+      start: 723,
+      end: 822,
+      element: "火象",
+      archetype: "舞台领导者",
+      headline: "用影响力带动团队",
+      summary: "你身上有一种容易被看见的能量。只要你相信一件事，就会想把它讲清楚、做漂亮，也希望身边的人一起进入状态。",
+      risk: "当你太在意表现时，可能会忽略过程里的细节。把光芒落到具体结果上，你的影响力会更持久。",
+      clusters: ["growth", "content", "entrepreneurship"],
+      keywords: ["影响力", "舞台感", "领导", "号召"]
+    },
+    {
+      name: "处女座",
+      start: 823,
+      end: 922,
+      element: "土象",
+      archetype: "系统优化者",
+      headline: "把混乱整理成标准",
+      summary: "你很容易看到别人忽略的小问题，也会下意识想把事情整理得更清楚、更顺手。越是混乱的地方，越能激发你的整理能力。",
+      risk: "你对自己要求不低，有时会因为想一次做到最好而迟迟不开始。先做一个可用版本，再慢慢打磨，会更适合你。",
+      clusters: ["operations", "data", "research"],
+      keywords: ["秩序", "细节", "流程", "专业度"]
+    },
+    {
+      name: "天秤座",
+      start: 923,
+      end: 1023,
+      element: "风象",
+      archetype: "关系协调者",
+      headline: "在不同立场中找到平衡",
+      summary: "你很会感受人与人之间的分寸，也容易注意到审美、氛围和关系里的微妙平衡。你常常能让复杂的场面变得更舒服。",
+      risk: "你可能会太想照顾每个人的感受，反而让自己难做决定。提前想清楚什么最重要，会帮你少消耗一点。",
+      clusters: ["people", "design", "content"],
+      keywords: ["协调", "审美", "合作", "平衡"]
+    },
+    {
+      name: "天蝎座",
+      start: 1024,
+      end: 1122,
+      element: "水象",
+      archetype: "深度研究者",
+      headline: "看透表象下的动因",
+      summary: "你不太满足于表面的答案。比起听别人怎么说，你更想知道事情背后的原因、动机和隐藏线索。",
+      risk: "你有时会把很多判断放在心里，别人不一定跟得上。把你的依据说出来，关系和合作都会更顺。",
+      clusters: ["research", "data", "finance"],
+      keywords: ["洞察", "韧性", "策略", "深度"]
+    },
+    {
+      name: "射手座",
+      start: 1123,
+      end: 1221,
+      element: "火象",
+      archetype: "远景探索者",
+      headline: "把视野带到更远的地方",
+      summary: "你需要看见更大的世界，才会真的有动力。新领域、新城市、新观点，都会让你重新燃起热情。",
+      risk: "你看得远，但有时会低估眼前细节。把大方向拆成几个阶段，反而能让自由感更落地。",
+      clusters: ["education", "content", "growth"],
+      keywords: ["视野", "探索", "自由度", "趋势"]
+    },
+    {
+      name: "摩羯座",
+      start: 1222,
+      end: 119,
+      element: "土象",
+      archetype: "目标攀登者",
+      headline: "把野心落到路径上",
+      summary: "你对目标、责任和长期积累有天然的敏感度。你不一定喜欢把野心挂在嘴边，但心里往往有自己的标准。",
+      risk: "你容易把压力一个人扛着。其实适当求助不是示弱，而是在保护你真正想完成的事情。",
+      clusters: ["operations", "finance", "product"],
+      keywords: ["责任", "目标", "积累", "管理"]
+    },
+    {
+      name: "水瓶座",
+      start: 120,
+      end: 218,
+      element: "风象",
+      archetype: "创新架构师",
+      headline: "用新系统解决旧问题",
+      summary: "你不太喜欢被旧规则困住。你会本能地思考：有没有更聪明、更自由、更有未来感的做法。",
+      risk: "你的想法有时会比别人快几步。试着用一个小原型、一个例子讲清楚，别人会更容易理解你。",
+      clusters: ["product", "data", "entrepreneurship"],
+      keywords: ["创新", "系统", "独立", "未来感"]
+    },
+    {
+      name: "双鱼座",
+      start: 219,
+      end: 320,
+      element: "水象",
+      archetype: "灵感共情者",
+      headline: "把感受转化为作品和疗愈",
+      summary: "你对感受、画面和故事很敏感。很多时候，你不是没有方向，而是需要一个能安放灵感的空间。",
+      risk: "当边界不清时，你容易被环境带着走。给灵感配一个简单计划，会让它更容易变成作品。",
+      clusters: ["design", "content", "people"],
+      keywords: ["灵感", "共情", "想象", "柔韧"]
+    }
+  ];
+
+  var LIFE_PATHS = {
+    1: {
+      title: "开创型",
+      summary: "你内在有一股想自己做决定的力量。比起一直等安排，你更愿意亲手试一试，看看事情能不能被你推起来。",
+      clusters: ["entrepreneurship", "growth", "product"],
+      action: "回想那些你主动提出想法、带着别人往前走的经历，它们最能说明你的力量。"
+    },
+    2: {
+      title: "协作型",
+      summary: "你很在意人与人之间是否舒服，也常常能在不同想法之间找到缓冲地带。",
+      clusters: ["people", "operations", "education"],
+      action: "那些你帮别人沟通、缓和关系、促成合作的时刻，都是你很珍贵的能力。"
+    },
+    3: {
+      title: "表达型",
+      summary: "你需要把想法说出来、写出来、做出来。只要有合适的舞台，你的表达会慢慢带出影响力。",
+      clusters: ["content", "design", "growth"],
+      action: "别让灵感只停在脑子里，试着把它变成一篇内容、一个方案或一段可展示的作品。"
+    },
+    4: {
+      title: "建设型",
+      summary: "你适合把不清楚的事慢慢理顺。别人觉得麻烦的细节，你反而能从中找到秩序。",
+      clusters: ["operations", "data", "finance"],
+      action: "把你做过的整理、优化、持续推进记录下来，它们会比一句“我很负责”更有说服力。"
+    },
+    5: {
+      title: "探索型",
+      summary: "你不太适合一直待在完全重复的节奏里。变化、尝试和新鲜感，会让你更容易进入状态。",
+      clusters: ["growth", "content", "entrepreneurship"],
+      action: "给自己的探索设一个小边界，比如两周验证一个想法，会让自由感变得更有成果。"
+    },
+    6: {
+      title: "支持型",
+      summary: "你很容易注意到别人是否被照顾到，也会在意一件事的体验是不是舒服、完整。",
+      clusters: ["people", "education", "design"],
+      action: "把你让别人更安心、更省心、更愿意留下来的经历记录下来，它们很能体现你的价值。"
+    },
+    7: {
+      title: "研究型",
+      summary: "你需要一点独处和思考空间。你不喜欢只听结论，更想知道这个结论到底从哪里来。",
+      clusters: ["research", "data", "product"],
+      action: "把你分析问题的过程写下来，会比只展示最后答案更能让人看到你的深度。"
+    },
+    8: {
+      title: "经营型",
+      summary: "你对结果、资源和现实回报比较敏感。只要目标清楚，你会自然开始思考怎么把事情做成。",
+      clusters: ["finance", "growth", "operations"],
+      action: "回看那些你帮事情变得更有效率、更有收益的经历，它们会成为你的底气。"
+    },
+    9: {
+      title: "愿景型",
+      summary: "你不太满足于只处理眼前的小事。你会想知道一件事对更多人、对更长远的影响是什么。",
+      clusters: ["education", "content", "people"],
+      action: "把你的理想落成一个小项目，比一直等待完美机会更能让你靠近想去的地方。"
+    },
+    11: {
+      title: "灵感型",
+      summary: "你常常凭直觉捕捉到一些微妙的东西，也容易用一句话、一个画面或一个故事启发别人。",
+      clusters: ["content", "people", "design"],
+      action: "给灵感一个固定出口，比如每周一次输出，会让它从情绪变成真正的力量。"
+    },
+    22: {
+      title: "大系统建设型",
+      summary: "你心里能装下比较大的目标，也会想把混乱的想法变成能运转起来的系统。",
+      clusters: ["product", "operations", "entrepreneurship"],
+      action: "不要急着一次完成全部，先把大目标拆成路线、节点和能开始的第一步。"
+    }
+  };
+
+  var SEASONS = {
+    spring: {
+      name: "春生启动力",
+      months: [3, 4, 5],
+      summary: "你更容易在新计划、新环境和新关系里获得能量。",
+      clusters: ["growth", "education"]
+    },
+    summer: {
+      name: "夏生感染力",
+      months: [6, 7, 8],
+      summary: "你更适合把热情、表达和影响力投入到看得见的目标。",
+      clusters: ["content", "people"]
+    },
+    autumn: {
+      name: "秋生判断力",
+      months: [9, 10, 11],
+      summary: "你对标准、取舍和效率更敏感，适合做需要判断质量的工作。",
+      clusters: ["operations", "research"]
+    },
+    winter: {
+      name: "冬生沉淀力",
+      months: [12, 1, 2],
+      summary: "你在安静积累、独立攻坚和长期目标上更容易建立优势。",
+      clusters: ["data", "finance"]
+    }
+  };
+
+  var WEEKDAY_TYPES = [
+    { name: "显化型", advice: "适合公开展示成果，用作品和表达争取机会。" },
+    { name: "感受型", advice: "适合从用户、客户和团队感受里捕捉真实需求。" },
+    { name: "推进型", advice: "适合负责关键节点，用行动推动停滞问题。" },
+    { name: "表达型", advice: "适合写作、沟通、培训和把复杂事讲清楚。" },
+    { name: "组织型", advice: "适合做计划、搭流程、协调资源和管理节奏。" },
+    { name: "审美型", advice: "适合把体验、品牌、内容或服务做得更有质感。" },
+    { name: "结构型", advice: "适合处理规则、风控、数据、工程和长期建设。" }
+  ];
+
+  var CAREERS = {
+    growth: {
+      title: "增长运营与市场策略",
+      roles: ["增长运营", "市场策划", "商务拓展", "用户运营"],
+      hotTracks: ["直播运营", "私域增长", "跨境电商增长", "品牌种草投放"],
+      why: "你比较容易被“怎么让一件事被更多人看见、使用、喜欢”这类问题吸引。",
+      next: "可以先选一个你熟悉的产品，想一想它为什么吸引你，又可以怎样让更多人愿意尝试。",
+      proof: "把你做过的活动、内容、社群或推广经历整理出来，重点写清楚你做了什么、带来了什么变化。",
+      keywords: ["用户增长", "活动策划", "内容传播", "复盘能力"]
+    },
+    entrepreneurship: {
+      title: "新业务与创业项目",
+      roles: ["创业项目助理", "新业务运营", "项目负责人", "渠道负责人"],
+      hotTracks: ["智能工具项目", "知识付费主理人", "本地生活项目", "跨境独立站"],
+      why: "你不一定喜欢一眼就能看到结局的事，反而会对新机会、新项目和从零开始的过程有兴趣。",
+      next: "可以先把一个小想法做成最简单的版本，找 3-5 个人聊聊他们是否真的需要。",
+      proof: "把你如何发现机会、拉到资源、解决临时问题的经历写下来，会比只说“我有想法”更有力量。",
+      keywords: ["从零到一", "资源整合", "商业验证", "项目推进"]
+    },
+    product: {
+      title: "产品与解决方案",
+      roles: ["产品经理", "解决方案顾问", "项目经理", "用户体验策划"],
+      hotTracks: ["智能产品运营", "创意工具产品", "低代码自动化", "小程序增长产品"],
+      why: "你会关心一件工具或服务到底好不好用，也容易思考别人为什么会卡住、为什么会喜欢。",
+      next: "可以拆解一个你常用的小程序或 App，写下它最顺手和最别扭的 3 个地方。",
+      proof: "准备一份简单的改版建议或流程图，让别人看到你不是只会吐槽，而是能把问题讲清楚。",
+      keywords: ["需求理解", "体验优化", "流程梳理", "产品思维"]
+    },
+    operations: {
+      title: "运营管理与项目交付",
+      roles: ["项目运营", "流程管理", "供应链运营", "客户成功"],
+      hotTracks: ["直播中控运营", "电商履约运营", "社区私域运营", "内容平台运营"],
+      why: "你在复杂场面里不容易只看热闹，而是会注意谁负责什么、哪里容易出问题。",
+      next: "可以把你做过的一件复杂事情拆成步骤，看看哪些环节其实可以更顺。",
+      proof: "把你如何让事情更有秩序、减少反复沟通、按时完成的经历写出来。",
+      keywords: ["流程整理", "项目推进", "细节跟进", "稳定交付"]
+    },
+    finance: {
+      title: "商业分析与财务金融",
+      roles: ["商业分析", "财务分析", "风控专员", "投资研究助理"],
+      hotTracks: ["商业数据分析", "电商经营分析", "投融资研究", "风控策略"],
+      why: "你对现实回报和风险比较敏感，容易思考一件事值不值得、能不能长期成立。",
+      next: "可以找一个你感兴趣的品牌，试着看它靠什么赚钱、成本可能花在哪里。",
+      proof: "把你做判断时参考了哪些信息、为什么这样取舍写清楚，就能体现你的判断力。",
+      keywords: ["商业判断", "风险意识", "成本收益", "经营分析"]
+    },
+    design: {
+      title: "品牌设计与体验美学",
+      roles: ["品牌策划", "视觉设计", "体验设计", "内容创意"],
+      hotTracks: ["智能视觉设计", "短视频包装设计", "品牌视觉策划", "体验设计"],
+      why: "你对氛围、画面和质感比较敏感，会在意一个东西给人的第一感觉是否舒服。",
+      next: "可以选一个你喜欢的品牌，整理它的颜色、文案、图片风格，说说它为什么让人有记忆点。",
+      proof: "用前后对比、风格板或小作品展示你的审美判断，比单纯说“我有创意”更有效。",
+      keywords: ["品牌调性", "用户体验", "视觉表达", "内容创意"]
+    },
+    content: {
+      title: "内容表达与知识传播",
+      roles: ["内容策划", "新媒体运营", "课程策划", "社群主理人"],
+      hotTracks: ["短视频编导", "小红书内容运营", "内容工具策划", "视频号主理人"],
+      why: "你适合把零散信息变成别人愿意看的内容。你不只是表达，也能捕捉别人为什么会被打动。",
+      next: "可以围绕一个你熟悉的话题连续写 7 条内容，观察哪一种表达更容易被回应。",
+      proof: "把你的选题、脚本、文章或账号记录整理成作品集，会让你的表达能力更直观。",
+      keywords: ["内容策划", "选题能力", "表达结构", "社群互动"]
+    },
+    education: {
+      title: "教育培训与成长咨询",
+      roles: ["课程运营", "培训师", "学习顾问", "职业规划助理"],
+      hotTracks: ["学习陪伴产品", "课程产品经理", "职业规划助理", "知识 IP 运营"],
+      why: "你会希望别人不只是听懂一句话，而是真的找到方法、完成成长。",
+      next: "可以把你擅长的一件事写成一个 30 分钟的小教程，看看别人能不能照着做。",
+      proof: "用课程大纲、学习路径或别人给你的反馈，来说明你有帮助他人成长的能力。",
+      keywords: ["学习路径", "课程设计", "辅导反馈", "知识转化"]
+    },
+    people: {
+      title: "人力资源与关系服务",
+      roles: ["HR", "组织发展助理", "客户成功", "心理服务助理"],
+      hotTracks: ["组织发展", "校园招聘", "客户成功", "心理陪伴服务运营"],
+      why: "你容易注意到人和人之间的感受，也会在意一个环境是否让人愿意留下来。",
+      next: "可以回想一次你帮助别人沟通、适应或解决不舒服体验的经历。",
+      proof: "把你如何理解对方、怎么沟通、最后关系或体验有什么改善讲清楚。",
+      keywords: ["沟通协调", "员工体验", "客户满意", "关系维护"]
+    },
+    research: {
+      title: "用户研究与策略分析",
+      roles: ["用户研究", "行业研究", "咨询分析", "策略运营"],
+      hotTracks: ["用户研究", "新工具应用研究", "行业洞察", "咨询分析"],
+      why: "你会想知道别人真正为什么这样选择，而不是只看表面结果。",
+      next: "可以找 3 个目标用户聊聊同一个问题，记录他们反复提到的困扰。",
+      proof: "把访谈记录、观察到的共性和你的建议整理出来，会很能体现你的深度。",
+      keywords: ["用户访谈", "行业洞察", "策略分析", "证据链"]
+    },
+    data: {
+      title: "信息分析与效率工具",
+      roles: ["信息分析", "业务梳理", "工具运营", "流程优化"],
+      hotTracks: ["经营分析", "效率工具运营", "流程自动化", "信息整理顾问"],
+      why: "你适合把模糊的问题拆清楚，再用更有依据的方式做判断。",
+      next: "可以找一份公开资料，试着回答一个简单问题，比如“什么因素影响结果”。",
+      proof: "把你如何整理信息、发现规律、得出建议的过程展示出来，就会比只给结论更有说服力。",
+      keywords: ["信息整理", "问题拆解", "流程优化", "判断依据"]
+    }
+  };
+
+  var REPORT_FEATURES = [
+    "先从生日看你的基础气质",
+    "再看你做事更顺手的方式",
+    "给出可以尝试的事业方向",
+    "最后整理成具体的小行动"
+  ];
+
+  var SCORE_META = {
+    drive: {
+      label: "推进力",
+      high: "你在需要有人先动起来的场景里会比较有优势。别人还在犹豫时，你往往已经开始找入口。"
+    },
+    insight: {
+      label: "洞察力",
+      high: "你不太容易只看表面，常常会多问一句“真正的原因是什么”。这会让你在复杂问题里更容易抓到重点。"
+    },
+    expression: {
+      label: "表达力",
+      high: "你适合把想法说清楚、讲好听，也容易通过表达让别人理解你、靠近你。"
+    },
+    structure: {
+      label: "结构力",
+      high: "你能把杂乱的事情慢慢理顺。越是信息很多、步骤很多的情况，越能看出你的耐心。"
+    },
+    empathy: {
+      label: "共情力",
+      high: "你比较容易感受到别人的状态，也能从细节里看出对方真正需要什么。"
+    },
+    creativity: {
+      label: "创造力",
+      high: "你不太满足于照搬旧方法，更容易被新的角度、新的表达和新的可能性吸引。"
+    }
+  };
+
+  var ELEMENT_SCORE = {
+    "火象": { drive: 88, insight: 70, expression: 82, structure: 66, empathy: 68, creativity: 84 },
+    "土象": { drive: 72, insight: 78, expression: 64, structure: 90, empathy: 70, creativity: 68 },
+    "风象": { drive: 74, insight: 78, expression: 90, structure: 68, empathy: 72, creativity: 82 },
+    "水象": { drive: 66, insight: 88, expression: 76, structure: 68, empathy: 92, creativity: 82 }
+  };
+
+  var LIFE_SCORE_BOOST = {
+    1: { drive: 8, creativity: 4 },
+    2: { empathy: 7, structure: 3 },
+    3: { expression: 8, creativity: 5 },
+    4: { structure: 8, insight: 3 },
+    5: { drive: 5, expression: 5, creativity: 4 },
+    6: { empathy: 7, structure: 4 },
+    7: { insight: 8, structure: 3 },
+    8: { drive: 5, structure: 5, insight: 3 },
+    9: { empathy: 5, expression: 4, insight: 4 },
+    11: { insight: 6, expression: 6, creativity: 5 },
+    22: { structure: 7, drive: 5, insight: 4 }
+  };
+
+  var PERSONAL_YEAR = {
+    1: { title: "新周期启动", advice: "这一年适合给自己一个新的开始。可以不用一下子做很大的决定，但要允许自己先迈出第一步。" },
+    2: { title: "关系与合作", advice: "这一年更适合慢慢建立关系。有人愿意和你一起做事，会比你一个人硬撑更轻松。" },
+    3: { title: "表达与曝光", advice: "这一年适合把想法说出来。写作、展示、面试、发内容，都会让别人更容易看见你。" },
+    4: { title: "打基础", advice: "这一年不一定最热闹，但很适合补基础、整理方法、建立稳定节奏。" },
+    5: { title: "变化与机会", advice: "这一年会更容易接触到新选择。不要急着全盘推翻，可以先小范围试一试。" },
+    6: { title: "责任与稳定", advice: "这一年适合把关系、生活和工作节奏照顾好。稳定下来，并不代表失去可能性。" },
+    7: { title: "深度学习", advice: "这一年适合多留时间给思考和学习。看起来慢一点，但会帮你把判断变得更准。" },
+    8: { title: "结果与资源", advice: "这一年适合认真面对收入、职位、资源和现实成果。你可以更主动地争取应得的东西。" },
+    9: { title: "整合与收尾", advice: "这一年适合清理消耗你的人和事。结束一些旧模式，才能给下一阶段留出空间。" }
+  };
+
+  function parseBirthday(value) {
+    if (!value || typeof value !== "string") {
+      return { ok: false, message: "请选择出生日期" };
+    }
+
+    var match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!match) {
+      return { ok: false, message: "生日格式需要是 YYYY-MM-DD" };
+    }
+
+    var year = Number(match[1]);
+    var month = Number(match[2]);
+    var day = Number(match[3]);
+    var date = new Date(year, month - 1, day);
+
+    if (
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ) {
+      return { ok: false, message: "请输入真实存在的日期" };
+    }
+
+    var today = new Date();
+    today.setHours(23, 59, 59, 999);
+    if (date > today) {
+      return { ok: false, message: "生日不能晚于今天" };
+    }
+
+    if (year < 1900) {
+      return { ok: false, message: "目前支持 1900 年之后的生日" };
+    }
+
+    return { ok: true, year: year, month: month, day: day, date: date };
+  }
+
+  function formatDate(date) {
+    var year = date.getFullYear();
+    var month = pad2(date.getMonth() + 1);
+    var day = pad2(date.getDate());
+    return year + "-" + month + "-" + day;
+  }
+
+  function pad2(value) {
+    return value < 10 ? "0" + value : String(value);
+  }
+
+  function getZodiac(month, day) {
+    var md = month * 100 + day;
+    for (var i = 0; i < ZODIACS.length; i += 1) {
+      var sign = ZODIACS[i];
+      var inRange = sign.start <= sign.end
+        ? md >= sign.start && md <= sign.end
+        : md >= sign.start || md <= sign.end;
+      if (inRange) {
+        return sign;
+      }
+    }
+    return ZODIACS[0];
+  }
+
+  function sumDigits(input) {
+    return String(input).replace(/\D/g, "").split("").reduce(function (sum, item) {
+      return sum + Number(item);
+    }, 0);
+  }
+
+  function reduceNumber(num, keepMaster) {
+    var value = num;
+    while (value > 9) {
+      if (keepMaster && (value === 11 || value === 22)) {
+        return value;
+      }
+      value = sumDigits(value);
+    }
+    return value;
+  }
+
+  function getSeason(month) {
+    var keys = Object.keys(SEASONS);
+    for (var i = 0; i < keys.length; i += 1) {
+      var season = SEASONS[keys[i]];
+      if (season.months.indexOf(month) !== -1) {
+        return season;
+      }
+    }
+    return SEASONS.spring;
+  }
+
+  function seededNoise(seed, key) {
+    var text = seed + ":" + key;
+    var hash = 0;
+    for (var i = 0; i < text.length; i += 1) {
+      hash = (hash * 31 + text.charCodeAt(i)) % 9973;
+    }
+    return (hash % 11) - 5;
+  }
+
+  function clamp(num, min, max) {
+    return Math.max(min, Math.min(max, num));
+  }
+
+  function buildScoreTone(score) {
+    if (score >= 90) {
+      return "很突出";
+    }
+    if (score >= 82) {
+      return "比较明显";
+    }
+    if (score >= 74) {
+      return "正在形成";
+    }
+    return "可以训练";
+  }
+
+  function buildScores(sign, lifeNumber, seed) {
+    var base = ELEMENT_SCORE[sign.element];
+    var boost = LIFE_SCORE_BOOST[lifeNumber] || {};
+    return Object.keys(SCORE_META).map(function (key) {
+      var value = clamp((base[key] || 70) + (boost[key] || 0) + seededNoise(seed, key), 58, 96);
+      return {
+        key: key,
+        label: SCORE_META[key].label,
+        value: value,
+        grade: buildScoreTone(value),
+        text: SCORE_META[key].high
+      };
+    }).sort(function (a, b) {
+      return b.value - a.value;
+    });
+  }
+
+  function rankCareers(sign, life, season, seed) {
+    var weights = {};
+
+    function add(keys, score) {
+      keys.forEach(function (key, index) {
+        weights[key] = (weights[key] || 0) + score - index;
+      });
+    }
+
+    add(sign.clusters, 7);
+    add(life.clusters, 8);
+    add(season.clusters, 4);
+
+    return Object.keys(CAREERS).map(function (key) {
+      return {
+        key: key,
+        score: (weights[key] || 0) + seededNoise(seed, "career-" + key) / 10,
+        detail: CAREERS[key]
+      };
+    }).sort(function (a, b) {
+      return b.score - a.score;
+    }).slice(0, 4).map(function (item, index) {
+      var fitScore = clamp(Math.round(78 + item.score * 1.7 + seededNoise(seed, "fit-" + item.key)), 72, 98);
+      return {
+        rank: index + 1,
+        key: item.key,
+        fitScore: fitScore,
+        fitText: index === 0 ? "很值得优先看看" : index === 1 ? "可以认真了解" : "适合作为备选",
+        title: item.detail.title,
+        roles: item.detail.roles,
+        hotTracks: item.detail.hotTracks,
+        why: item.detail.why,
+        next: item.detail.next,
+        proof: item.detail.proof,
+        keywords: item.detail.keywords
+      };
+    });
+  }
+
+  function buildModelSignals(sign, life, season, weekday, scores) {
+    return [
+      {
+        title: "星象底色",
+        value: sign.name + " · " + sign.element,
+        detail: "这部分更像你的第一反应：你面对事情时，通常会从哪里开始用力。"
+      },
+      {
+        title: "生命数字",
+        value: String(life.number || ""),
+        detail: life.title + "： " + life.action
+      },
+      {
+        title: "成长节律",
+        value: season.name,
+        detail: "它更像你的节奏提醒。你不必一直保持同一种状态，找到适合自己的发力方式更重要。"
+      },
+      {
+        title: "显眼优势",
+        value: scores[0].label,
+        detail: "这项能力不是用来给你贴标签，而是提醒你：有些事情你可能本来就做得比想象中顺。"
+      }
+    ];
+  }
+
+  function buildMarketTracks(careers) {
+    return unique(careers.reduce(function (all, item) {
+      return all.concat(item.hotTracks || []);
+    }, [])).slice(0, 10);
+  }
+
+  function buildPersonalYear(month, day, currentYear) {
+    var number = reduceNumber(sumDigits(String(currentYear) + pad2(month) + pad2(day)), false);
+    return {
+      number: number,
+      title: PERSONAL_YEAR[number].title,
+      advice: PERSONAL_YEAR[number].advice
+    };
+  }
+
+  function buildFitGrade(score) {
+    if (score >= 92) {
+      return "很高";
+    }
+    if (score >= 86) {
+      return "偏高";
+    }
+    return "可尝试";
+  }
+
+  function buildProfile(birthday, options) {
+    var parsed = parseBirthday(birthday);
+    if (!parsed.ok) {
+      return {
+        isValid: false,
+        error: parsed.message
+      };
+    }
+
+    var currentYear = options && options.currentYear ? options.currentYear : new Date().getFullYear();
+    var sign = getZodiac(parsed.month, parsed.day);
+    var lifeNumber = reduceNumber(sumDigits(parsed.year + pad2(parsed.month) + pad2(parsed.day)), true);
+    var life = LIFE_PATHS[lifeNumber] || LIFE_PATHS[reduceNumber(lifeNumber, false)];
+    life.number = lifeNumber;
+    var season = getSeason(parsed.month);
+    var weekday = WEEKDAY_TYPES[parsed.date.getDay()];
+    var seed = parsed.year + "-" + parsed.month + "-" + parsed.day;
+    var scores = buildScores(sign, lifeNumber, seed);
+    var careers = rankCareers(sign, life, season, seed);
+    var marketTracks = buildMarketTracks(careers);
+    var personalYear = buildPersonalYear(parsed.month, parsed.day, currentYear);
+    var topTalents = scores.slice(0, 3).map(function (item, index) {
+      return {
+        title: item.label,
+        value: item.grade,
+        text: item.text,
+        tag: ["主天赋", "优势位", "可训练"][index]
+      };
+    });
+    var resumeKeywords = unique(careers.reduce(function (all, item) {
+      return all.concat(item.keywords);
+    }, [])).slice(0, 8);
+    var modelSignals = buildModelSignals(sign, life, season, weekday, scores);
+    var careerFitScore = clamp(Math.round((scores[0].value + scores[1].value + careers[0].fitScore) / 3), 76, 98);
+    var fitGrade = buildFitGrade(careerFitScore);
+
+    return {
+      isValid: true,
+      birthday: formatDate(parsed.date),
+      title: sign.name + " · " + life.title,
+      archetype: sign.element + sign.archetype,
+      headline: sign.headline,
+      overview: sign.summary + life.summary,
+      positioning: "这份解读会先看你的基础气质，再把这些特质放到事业选择、作品练习和表达方式里慢慢理解。出生时辰与城市可以作为深度解读的补充信息。",
+      careerFitScore: careerFitScore,
+      fitGrade: fitGrade,
+      fitTone: "你和这些方向的契合感" + fitGrade + "。这不是给人生下结论，而是帮你从几个更顺手的入口开始观察自己。",
+      reportFeatures: REPORT_FEATURES,
+      modelSignals: modelSignals,
+      sign: sign,
+      lifeNumber: lifeNumber,
+      life: life,
+      season: season,
+      weekday: weekday,
+      scores: scores,
+      talents: topTalents,
+      careers: careers,
+      marketTracks: marketTracks,
+      personalYear: personalYear,
+      resumeKeywords: resumeKeywords,
+      blindSpot: sign.risk,
+      developmentPlan: [
+        {
+          period: "第 1-2 周",
+          title: "先观察自己被什么吸引",
+          detail: "从前两个推荐方向里各找几个真实方向或案例，不用急着投递，先看看哪些内容会让你自然产生兴趣。"
+        },
+        {
+          period: "第 3-6 周",
+          title: "做一个小作品",
+          detail: "围绕“" + careers[0].title + "”做一个很小的练习，比如一页分析、一份策划、一次访谈或一组内容。重点不是完美，而是开始有痕迹。"
+        },
+        {
+          period: "第 7-10 周",
+          title: "把经历讲清楚",
+          detail: "把你做过的事改成更容易被理解的表达：当时遇到什么问题，你做了什么，最后有什么变化。"
+        },
+        {
+          period: "第 11-12 周",
+          title: "找真实反馈",
+          detail: "找朋友、前辈或目标行业的人看一看你的作品和表达。别怕被指出问题，反馈会帮你更快接近真正适合的位置。"
+        }
+      ],
+      prompts: [
+        "我在哪些事情上会不知不觉投入很多精力？",
+        "我过去有哪些经历，其实已经体现了“" + topTalents[0].title + "”？",
+        "如果先试试“" + careers[0].title + "”，我这周能做的最小一步是什么？"
+      ],
+      premiumPreview: {
+        title: "更深入的解读",
+        price: "体验版 9.9 元",
+        points: [
+          "加入出生时辰和城市后，把事业倾向看得更细一点",
+          "把推荐方向拆成更具体的选择，减少“看完还是不知道做什么”的感觉",
+          "帮你把已有经历改写成更自然、更容易被理解的表达",
+          "给你一份 30 天小练习清单，把想法慢慢变成能展示的作品"
+        ]
+      },
+      shareText: "我的本命天赋是 " + sign.name + " · " + life.title + "，可以先从这些方向开始观察：" + marketTracks.slice(0, 3).join(" / "),
+      disclaimer: "结果基于生日的星座、数字和季节象征生成，适合娱乐和自我探索，不构成职业、心理、医学或投资建议。真正的发展方向仍应结合兴趣、能力、教育背景和市场机会判断。"
+    };
+  }
+
+  function unique(list) {
+    var seen = {};
+    return list.filter(function (item) {
+      if (seen[item]) {
+        return false;
+      }
+      seen[item] = true;
+      return true;
+    });
+  }
+
+  return {
+    buildProfile: buildProfile,
+    parseBirthday: parseBirthday,
+    formatDate: formatDate
+  };
+});
+
+</script>
+<script>
+(function () {
+  var input = document.getElementById("birthday");
+  var generate = document.getElementById("generate");
+  var report = document.getElementById("report");
+  var copy = document.getElementById("copy");
+  var reset = document.getElementById("reset");
+  var currentProfile = null;
+
+  input.max = window.BirthdayTalent.formatDate(new Date());
+
+  function text(id, value) {
+    document.getElementById(id).textContent = value;
+  }
+
+  function clear(node) {
+    while (node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+  }
+
+  function span(value) {
+    var item = document.createElement("span");
+    item.textContent = value;
+    return item;
+  }
+
+  function renderList(id, list) {
+    var node = document.getElementById(id);
+    clear(node);
+    list.forEach(function (item) {
+      node.appendChild(span(item));
+    });
+  }
+
+  function renderScores(scores) {
+    var node = document.getElementById("scores");
+    clear(node);
+    scores.forEach(function (item) {
+      var row = document.createElement("div");
+      row.className = "score-row";
+      row.innerHTML =
+        '<div class="score-head"><span>' + item.label + '</span><span>' + item.grade + '</span></div>' +
+        '<div class="score-track"><div class="score-fill" style="width:' + item.value + '%"></div></div>';
+      node.appendChild(row);
+    });
+  }
+
+  function renderFeatures(features) {
+    var node = document.getElementById("features");
+    clear(node);
+    features.forEach(function (item) {
+      var chip = document.createElement("div");
+      chip.className = "feature-chip";
+      chip.textContent = item;
+      node.appendChild(chip);
+    });
+  }
+
+  function renderSignals(signals) {
+    var node = document.getElementById("signals");
+    clear(node);
+    signals.forEach(function (item) {
+      var card = document.createElement("article");
+      card.className = "signal-card panel";
+      card.innerHTML =
+        '<div class="signal-title">' + item.title + '</div>' +
+        '<div class="signal-value">' + item.value + '</div>' +
+        '<p>' + item.detail + '</p>';
+      node.appendChild(card);
+    });
+  }
+
+  function renderTalents(talents) {
+    var node = document.getElementById("talents");
+    clear(node);
+    talents.forEach(function (item) {
+      var card = document.createElement("article");
+      card.className = "talent-card panel";
+      card.innerHTML =
+        '<div class="talent-top"><span>' + item.tag + '</span><span>' + item.value + '</span></div>' +
+        '<h4>' + item.title + '</h4>' +
+        '<p>' + item.text + '</p>';
+      node.appendChild(card);
+    });
+  }
+
+  function renderCareers(careers) {
+    var node = document.getElementById("careers");
+    clear(node);
+    careers.forEach(function (item) {
+      var card = document.createElement("article");
+      card.className = "career-card panel";
+      var roles = item.roles.map(function (role) {
+        return "<span>" + role + "</span>";
+      }).join("");
+      var tracks = item.hotTracks.map(function (track) {
+        return "<span>" + track + "</span>";
+      }).join("");
+      card.innerHTML =
+        '<div class="career-top"><div class="career-rank">建议 ' + item.rank + '</div><div class="career-fit">' + item.fitText + '</div></div>' +
+        '<h4>' + item.title + '</h4>' +
+        '<p>' + item.why + '</p>' +
+        '<div class="track-list">' + tracks + '</div>' +
+        '<div class="role-list">' + roles + '</div>' +
+        '<p class="next">可以先这样试：' + item.next + '</p>' +
+        '<p class="proof">可以展示的经历：' + item.proof + '</p>';
+      node.appendChild(card);
+    });
+  }
+
+  function renderPlan(plan) {
+    var node = document.getElementById("plan");
+    clear(node);
+    plan.forEach(function (item) {
+      var block = document.createElement("div");
+      block.className = "plan-item";
+      block.innerHTML =
+        '<div class="plan-period">' + item.period + '</div>' +
+        '<div class="plan-title">' + item.title + '</div>' +
+        '<p class="plan-detail">' + item.detail + '</p>';
+      node.appendChild(block);
+    });
+  }
+
+  function renderPrompts(prompts) {
+    var node = document.getElementById("prompts");
+    clear(node);
+    prompts.forEach(function (item) {
+      var prompt = document.createElement("div");
+      prompt.className = "prompt-item";
+      prompt.textContent = item;
+      node.appendChild(prompt);
+    });
+  }
+
+  function renderPremium(data) {
+    text("premiumTitle", data.title);
+    text("premiumPrice", data.price);
+    var node = document.getElementById("premiumPoints");
+    clear(node);
+    data.points.forEach(function (item) {
+      var point = document.createElement("span");
+      point.textContent = item;
+      node.appendChild(point);
+    });
+  }
+
+  function setModelNotice(message) {
+    var node = document.getElementById("modelNotice");
+    if (!node) {
+      return;
+    }
+    if (!message) {
+      node.hidden = true;
+      node.textContent = "";
+      return;
+    }
+    node.hidden = false;
+    node.textContent = message;
+  }
+
+  function mergePatch(data, patch) {
+    if (!patch || typeof patch !== "object") {
+      return data;
+    }
+
+    if (patch.overview) {
+      data.overview = patch.overview;
+    }
+    if (patch.fitTone) {
+      data.fitTone = patch.fitTone;
+    }
+    if (Array.isArray(patch.careers)) {
+      patch.careers.forEach(function (item, index) {
+        if (!data.careers[index] || !item) {
+          return;
+        }
+        ["why", "next", "proof"].forEach(function (key) {
+          if (item[key]) {
+            data.careers[index][key] = item[key];
+          }
+        });
+      });
+    }
+    if (Array.isArray(patch.developmentPlan)) {
+      patch.developmentPlan.forEach(function (item, index) {
+        if (data.developmentPlan[index] && item && item.detail) {
+          data.developmentPlan[index].detail = item.detail;
+        }
+      });
+    }
+    if (Array.isArray(patch.prompts) && patch.prompts.length) {
+      data.prompts = patch.prompts.slice(0, 3);
+    }
+
+    return data;
+  }
+
+  function renderProfile(data) {
+    if (!data.isValid) {
+      alert(data.error);
+      return;
+    }
+
+    currentProfile = data;
+    text("reportDate", data.birthday);
+    text("lifeNumber", data.lifeNumber);
+    text("reportTitle", data.title);
+    text("reportArchetype", data.archetype);
+    text("reportOverview", data.overview);
+    text("fitScore", data.fitGrade);
+    text("positioning", data.fitTone);
+    text("yearTitle", data.personalYear.number + " 号年度节奏 · " + data.personalYear.title);
+    text("yearAdvice", data.personalYear.advice);
+    text("blindSpot", data.blindSpot);
+    text("disclaimer", data.disclaimer);
+    renderScores(data.scores);
+    renderFeatures(data.reportFeatures);
+    renderSignals(data.modelSignals);
+    renderTalents(data.talents);
+    renderCareers(data.careers);
+    renderPlan(data.developmentPlan);
+    renderList("marketTracks", data.marketTracks);
+    renderList("keywords", data.resumeKeywords);
+    renderPrompts(data.prompts);
+    renderPremium(data.premiumPreview);
+    report.hidden = false;
+    report.scrollIntoView({ behavior: "smooth", block: "start" });
+    return data;
+  }
+
+  function enhanceWithModel(data) {
+    if (!window.fetch || window.location.protocol === "file:") {
+      setModelNotice("当前是单文件预览，使用本地解读。需要模型润色时，请用桌面的“一键打开”入口启动本地服务。");
+      return;
+    }
+    if (!/^(127\.0\.0\.1|localhost)$/.test(window.location.hostname)) {
+      setModelNotice("当前是公开预览版，使用本地解读。完整模型润色需要接入后端服务。");
+      return;
+    }
+
+    setModelNotice("正在尝试调用已配置的语言模型润色报告；如果没有配置密钥，会自动保留本地解读。");
+    fetch("/api/enhance-report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ profile: data })
+    }).then(function (response) {
+      return response.json().then(function (payload) {
+        return { ok: response.ok, status: response.status, payload: payload };
+      });
+    }).then(function (result) {
+      if (result.status === 202) {
+        setModelNotice("当前未配置外部润色服务，已使用本地解读版本。配置后会自动匹配可用模型并润色报告。");
+        return;
+      }
+      if (!result.ok || !result.payload || !result.payload.patch) {
+        setModelNotice("模型润色暂时不可用，已保留本地解读版本。");
+        return;
+      }
+      currentProfile = mergePatch(currentProfile, result.payload.patch);
+      renderProfile(currentProfile);
+      setModelNotice("已使用模型润色本次报告，模型：" + (result.payload.model || "auto"));
+    }).catch(function () {
+      setModelNotice("模型润色暂时不可用，已保留本地解读版本。");
+    });
+  }
+
+  function render() {
+    var data = window.BirthdayTalent.buildProfile(input.value);
+    if (!data.isValid) {
+      alert(data.error);
+      return;
+    }
+
+    currentProfile = data;
+    renderProfile(data);
+    enhanceWithModel(data);
+  }
+
+  generate.addEventListener("click", render);
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      render();
+    }
+  });
+
+  reset.addEventListener("click", function () {
+    input.value = "";
+    report.hidden = true;
+    currentProfile = null;
+    input.focus();
+  });
+
+  copy.addEventListener("click", function () {
+    if (!currentProfile) {
+      return;
+    }
+    var summary = [
+      "我的本命天赋报告",
+      currentProfile.birthday + " / " + currentProfile.title,
+      currentProfile.shareText,
+      "可以留意：" + currentProfile.careers.map(function (item) { return item.title; }).join("、"),
+      "表达关键词：" + currentProfile.resumeKeywords.join("、")
+    ].join("\n");
+
+    navigator.clipboard.writeText(summary).then(function () {
+      copy.textContent = "已复制";
+      setTimeout(function () {
+        copy.textContent = "复制摘要";
+      }, 1200);
+    });
+  });
+})();
+
+</script>
+  </body>
+</html>
+
