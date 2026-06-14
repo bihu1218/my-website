@@ -103,35 +103,35 @@ const assessmentModes: AssessmentMode[] = [
   {
     id: 'whole',
     title: '全屋体检',
-    subtitle: '动线 / 采光 / 收纳 / 安全',
+    subtitle: '找出最该先改的 3 件事',
     icon: Home,
     roomType: 'whole',
     goals: ['comfort', 'health'],
     concerns: ['airflow', 'lighting', 'clutter'],
-    prompt: '适合第一次使用，快速找出家里最该先调整的 3 个问题。',
-    result: '输出全屋评分、优先改动顺序和低成本方案。',
+    prompt: '适合第一次使用。先看入户、客厅、卧室、厨房这些大关系，判断动线、采光、收纳和安全感。',
+    result: '你会得到：综合分、3 个优先问题、先不花钱怎么改。',
   },
   {
     id: 'sleep',
     title: '睡眠卧室',
-    subtitle: '床位 / 门冲 / 镜面 / 光线',
+    subtitle: '床位、门冲、镜面、光线',
     icon: Sofa,
     roomType: 'bedroom',
     goals: ['sleep', 'health'],
     concerns: ['sleep', 'privacy', 'lighting'],
-    prompt: '适合睡眠差、卧室压抑、床位不确定的用户。',
-    result: '输出床位、床头、镜面、灯光和收纳建议。',
+    prompt: '适合睡不好、卧室压抑、床不知道怎么摆。重点看床头有没有靠、门窗是否直冲、夜间光线是否刺激。',
+    result: '你会得到：床位调整、灯光建议、镜子和收纳处理方法。',
   },
   {
     id: 'wealth',
     title: '财位事业',
-    subtitle: '客厅 / 书桌 / 厨房 / 明堂',
+    subtitle: '客厅、书桌、厨房、明堂',
     icon: Compass,
     roomType: 'living',
     goals: ['wealth', 'career'],
     concerns: ['wealth', 'airflow', 'clutter'],
-    prompt: '适合想看财位、事业位、办公区和客厅格局的用户。',
-    result: '输出财位逻辑、事业区布置和可执行调整。',
+    prompt: '适合想看财位、事业位和办公区。这里不讲暴富，主要判断明亮、稳定、可停留、少干扰。',
+    result: '你会得到：财位逻辑、书桌方向、客厅和厨房的低成本调整。',
   },
 ]
 
@@ -149,6 +149,8 @@ const roomCopy: Record<RoomType, string> = {
   entry: '玄关',
   whole: '整屋',
 }
+
+const particleDots = Array.from({ length: 18 }, (_, index) => index)
 
 function App() {
   const [images, setImages] = useState<UploadImage[]>([])
@@ -295,117 +297,126 @@ function App() {
 
   return (
     <main className="app-shell">
-      <section className="hero-panel">
-        <div className="hero-image" aria-hidden="true">
-          <div className="hero-photo-badge">
-            <Camera size={16} />
-            <span>先拍 3-6 张家里照片</span>
-          </div>
-          <div className="hero-room">
-            <span className="hero-window" />
-            <span className="hero-sofa" />
-            <span className="hero-table" />
-            <span className="hero-plant" />
-          </div>
-          <div className="hero-visual-notes">
-            <span>门窗关系</span>
-            <span>家具位置</span>
-            <span>光线通风</span>
-          </div>
-        </div>
-        <div className="hero-copy">
-          <p className="eyebrow">空间风水智能评估</p>
-          <h1>拍几张家里照片，系统帮你梳理哪里该调整</h1>
-          <p className="hero-lead">
-            我们把传统风水问题拆成更容易理解的居住逻辑：门窗怎么通风、家具会不会压迫、床和沙发有没有安全感、厨房动线顺不顺、光线和收纳会不会影响日常状态。
-          </p>
-          <div className="hero-action-row">
-            <a href="#upload-section" className="primary-hero-action">
-              <Camera size={18} aria-hidden="true" />
-              按步骤开始
-            </a>
-            <span>3 分钟提交，生成一份可执行报告</span>
-          </div>
-          <div className="hero-guide-grid">
-            <article>
-              <strong>1. 拍照</strong>
-              <p>拍入户、客厅、卧室、厨房、卫生间、阳台，重点拍门、窗、床、沙发、灶台和镜子。</p>
-            </article>
-            <article>
-              <strong>2. 补信息</strong>
-              <p>填写大门朝向、楼层、入住年份、家庭成员、主要诉求；出生信息只作为个性化参考。</p>
-            </article>
-            <article>
-              <strong>3. 看报告</strong>
-              <p>得到整体评分、每个空间的问题说明、调整顺序、低成本做法、颜色材质和注意事项。</p>
-            </article>
-          </div>
-          <div className="hero-proof-list" aria-label="报告特点">
-            <span>先改动线</span>
-            <span>再调光线</span>
-            <span>最后看颜色材质</span>
-          </div>
-          <div className="hero-output-panel">
-            <strong>报告会告诉你：</strong>
-            <ul>
-              <li>哪些问题最该先处理</li>
-              <li>能不能不花钱先调整</li>
-              <li>家具、灯光、颜色怎么改更合理</li>
-            </ul>
-          </div>
-        </div>
-      </section>
+      <div className="particle-field" aria-hidden="true">
+        {particleDots.map((dot) => (
+          <span key={dot} />
+        ))}
+      </div>
 
-      <form className="analysis-form" onSubmit={generateReport}>
-        <HistoryPanel items={history} onOpen={openHistoryItem} onClear={clearHistory} />
+      <form className="analysis-form mobile-flow" onSubmit={generateReport}>
+        <section className="hero-panel scanner-hero" id="upload-section">
+          <div className="hero-copy">
+            <p className="eyebrow">玄学逻辑 × 科学检测</p>
+            <h1>先拍家里现状，看看空间哪里在偷偷消耗你</h1>
+            <p className="hero-lead">
+              用传统风水的语言抓痛点，用建筑动线、采光通风、环境心理和安全规则做解释。你不用懂术语，上传 3-6 张照片，系统会直接告诉你先改哪里、为什么、怎么改、花不花钱。
+            </p>
 
-        <section className="tool-section upload-section" id="upload-section">
-          <div className="section-heading">
-            <span className="step-badge">1</span>
-            <div>
-              <h2>上传照片</h2>
-              <p>建议包含门窗、主要家具、房间入口和长期停留位置。</p>
+            <div className="hook-grid" aria-label="用户常见痛点">
+              <span>总觉得家里越住越累？</span>
+              <span>床明明不小，还是睡不安稳？</span>
+              <span>想知道财位到底该怎么用？</span>
+            </div>
+
+            <div className="flow-steps" aria-label="三步生成">
+              <span>1 拍照</span>
+              <span>2 选目标</span>
+              <span>3 补一句</span>
             </div>
           </div>
 
-          <label className="upload-zone">
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              multiple
-              onChange={(event) => handleFiles(event.target.files)}
-            />
-            <Camera aria-hidden="true" />
-            <strong>{isProcessingImages ? '正在压缩图片' : images.length ? '继续添加照片' : '拍照或选择图片'}</strong>
-            <span>最多 6 张，上传前会自动压缩，手机拍摄请尽量站在房间角落。</span>
-          </label>
+          <section className="scan-console" aria-label="拍照检测入口">
+            <div className="console-topline">
+              <span className="console-dot" />
+              <strong>HOUSE SCAN 01</strong>
+              <small>{images.length ? 'READY' : 'WAITING'}</small>
+            </div>
 
-          {images.length > 0 && (
-            <>
-              <div className="upload-meta">
-                <span>已压缩 {formatBytes(totalOriginalSize)} → {formatBytes(totalCompressedSize)}</span>
+            <div className="compass-hud" aria-hidden="true">
+              <span className="compass-ring outer" />
+              <span className="compass-ring inner" />
+              <span className="compass-axis horizontal" />
+              <span className="compass-axis vertical" />
+              <span className="compass-core">气</span>
+              <span className="trigram trigram-n">坎</span>
+              <span className="trigram trigram-s">离</span>
+              <span className="trigram trigram-e">震</span>
+              <span className="trigram trigram-w">兑</span>
+            </div>
+
+            <div className="scan-tags">
+              <span className={images.length ? 'active' : ''}>照片扫描{images.length ? '已接入' : '待接入'}</span>
+              <span>动线识别</span>
+              <span>光线检测</span>
+              <span>家具压迫点</span>
+            </div>
+
+            <div className={images.length ? 'upload-zone ready' : 'upload-zone'}>
+              <div className="upload-icon">
+                <Camera aria-hidden="true" />
               </div>
-              <div className="image-grid" aria-label="已上传照片">
-                {images.map((image) => (
-                  <figure key={image.id} className="image-tile">
-                    <img src={image.preview} alt={`${selectedRoom.label}照片预览`} />
-                    <button type="button" onClick={() => removeImage(image.id)} aria-label="移除照片">
-                      <X size={16} aria-hidden="true" />
-                    </button>
-                  </figure>
-                ))}
+              <strong>{isProcessingImages ? '正在压缩图片' : images.length ? '照片已接入' : '立即拍照检测'}</strong>
+              <span>{images.length ? '已准备好生成报告，也可以继续补充角度。' : '拍 3-6 张即可：入户、客厅、卧室、厨房，重点拍门窗、床、沙发、灶台和镜子。'}</span>
+
+              <div className="upload-actions">
+                <label className="upload-action primary">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={(event) => handleFiles(event.target.files)}
+                  />
+                  <Camera size={18} aria-hidden="true" />
+                  立即拍照
+                </label>
+
+                <label className="upload-action secondary">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(event) => handleFiles(event.target.files)}
+                  />
+                  从相册选
+                </label>
               </div>
-            </>
-          )}
+
+              {images.length > 0 && (
+                <div className="ready-pill">
+                  <CheckCircle2 size={16} aria-hidden="true" />
+                  已准备好生成报告
+                </div>
+              )}
+            </div>
+
+            {images.length > 0 && (
+              <>
+                <div className="upload-meta">
+                  <span>{images.length}/6 张已接入 · 已压缩 {formatBytes(totalOriginalSize)} → {formatBytes(totalCompressedSize)}</span>
+                </div>
+                <div className="image-grid" aria-label="已上传照片">
+                  {images.map((image) => (
+                    <figure key={image.id} className="image-tile">
+                      <img src={image.preview} alt={`${selectedRoom.label}照片预览`} />
+                      <button type="button" onClick={() => removeImage(image.id)} aria-label="移除照片">
+                        <X size={16} aria-hidden="true" />
+                      </button>
+                    </figure>
+                  ))}
+                </div>
+              </>
+            )}
+          </section>
         </section>
+
+        <HistoryPanel items={history} onOpen={openHistoryItem} onClear={clearHistory} />
 
         <section className="tool-section mode-section">
           <div className="section-heading">
             <span className="step-badge">2</span>
             <div>
-              <h2>选择检测模式</h2>
-              <p>只保留 3 个入口，点一个就自动配置分析目标。</p>
+              <h2>选择检测目标</h2>
+              <p>只保留 3 个入口。点一个，系统自动配置分析重点。</p>
             </div>
           </div>
 
@@ -437,6 +448,28 @@ function App() {
             <strong>{selectedMode.title}</strong>
             <p>{selectedMode.prompt}</p>
             <small>{selectedMode.result}</small>
+          </div>
+        </section>
+
+        <section className="tool-section intent-section">
+          <div className="section-heading">
+            <span className="step-badge">3</span>
+            <div>
+              <h2>补一句需求</h2>
+              <p>不用写长篇，像和师傅说一句话就行。</p>
+            </div>
+          </div>
+
+          <div className="prompt-chips" aria-label="快捷需求">
+            {['卧室睡不好', '入户正对阳台', '想看财位'].map((example) => (
+              <button
+                key={example}
+                type="button"
+                onClick={() => setForm((current) => ({ ...current, notes: example }))}
+              >
+                {example}
+              </button>
+            ))}
           </div>
 
           <label className="field">
@@ -501,18 +534,32 @@ function App() {
 
               <div className="two-column">
                 <label className="field">
-                  <span>出生日期</span>
+                  <span className="field-title">
+                    出生日期
+                    <small>可不填，仅用于颜色/材质参考</small>
+                  </span>
                   <input
-                    type="date"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="bday"
+                    enterKeyHint="next"
+                    placeholder="1990 06 14"
                     value={form.birthDate}
                     onChange={(event) => setForm((current) => ({ ...current, birthDate: event.target.value }))}
                   />
                 </label>
 
                 <label className="field">
-                  <span>出生时间</span>
+                  <span className="field-title">
+                    出生时间
+                    <small>可不填</small>
+                  </span>
                   <input
-                    type="time"
+                    type="text"
+                    inputMode="numeric"
+                    enterKeyHint="done"
+                    pattern="[0-9: ]*"
+                    placeholder="08:30"
                     value={form.birthTime}
                     onChange={(event) => setForm((current) => ({ ...current, birthTime: event.target.value }))}
                   />
@@ -531,16 +578,18 @@ function App() {
 
         <section className="sticky-submit">
           <div>
-            <strong>{images.length} 张照片</strong>
+            <strong>{images.length ? `${images.length} 张照片已接入` : '先拍 3-6 张照片'}</strong>
             <span>
               {isProcessingImages
                 ? '图片处理中'
-                : `${selectedRoom.label} · ${form.goals.length} 个诉求 · ${form.concerns.length} 个关注点`}
+                : images.length
+                  ? `${selectedMode.title} · 可以生成检测报告`
+                  : '上传后 3 步内生成报告'}
             </span>
           </div>
           <button type="submit" disabled={!canGenerate}>
             {isGenerating ? <Loader2 className="spin" size={18} aria-hidden="true" /> : <Sparkles size={18} aria-hidden="true" />}
-            {isGenerating ? '生成中' : '生成报告'}
+            {isGenerating ? '生成中' : '生成检测报告'}
           </button>
         </section>
       </form>
@@ -559,7 +608,8 @@ function ReportView({
   form: FormState
   onBack: () => void
 }) {
-  const modeLabel = report.mode === 'ai' ? 'AI 图像分析' : '规则引擎演示'
+  const modeLabel = report.mode === 'ai' ? '空间图像检测' : '规则检测演示'
+  const priorityFindings = report.findings.slice(0, 3)
 
   const downloadReport = () => {
     const content = buildMarkdownReport(report, form)
@@ -588,7 +638,7 @@ function ReportView({
       <section className="report-hero">
         <div>
           <p className="eyebrow">{modeLabel}</p>
-          <h1>{roomCopy[form.roomType]}风水与居住舒适度报告</h1>
+          <h1>{roomCopy[form.roomType]}空间能量与居住逻辑报告</h1>
           <p>{report.overview}</p>
         </div>
         <div className="score-ring" aria-label={`总体评分 ${report.overallScore} 分`}>
@@ -601,6 +651,42 @@ function ReportView({
         {images.slice(0, 4).map((image) => (
           <img key={image.id} src={image.preview} alt="已分析的家居照片" />
         ))}
+      </section>
+
+      <section className="report-section priority-section">
+        <div className="section-title">
+          <Sparkles size={20} aria-hidden="true" />
+          <h2>先看这 3 个问题</h2>
+        </div>
+        <div className="priority-list">
+          {priorityFindings.map((finding, index) => (
+            <article className={`priority-card ${finding.severity}`} key={finding.title}>
+              <div className="priority-number">0{index + 1}</div>
+              <div>
+                <span>{severityCopy[finding.severity]}</span>
+                <h3>{finding.title}</h3>
+                <dl>
+                  <div>
+                    <dt>问题</dt>
+                    <dd>{finding.evidence}</dd>
+                  </div>
+                  <div>
+                    <dt>为什么</dt>
+                    <dd>{finding.principle}</dd>
+                  </div>
+                  <div>
+                    <dt>怎么改</dt>
+                    <dd>{finding.action}</dd>
+                  </div>
+                  <div>
+                    <dt>花不花钱</dt>
+                    <dd>先做家具微调、遮挡缓冲、灯光和收纳整理，大多可以低成本验证。</dd>
+                  </div>
+                </dl>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="score-list">
@@ -622,7 +708,7 @@ function ReportView({
         <section className="report-section">
           <div className="section-title">
             <Sparkles size={20} aria-hidden="true" />
-            <h2>六部分顾问报告</h2>
+            <h2>详细顾问报告</h2>
           </div>
           <div className="consultant-section-list">
             {report.sections.map((section) => (
