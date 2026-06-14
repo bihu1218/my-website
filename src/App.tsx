@@ -20,6 +20,7 @@ import {
   Wind,
   X,
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import './App.css'
@@ -28,10 +29,7 @@ import type {
   Concern,
   Finding,
   FormState,
-  Gender,
   LifeGoal,
-  Orientation,
-  Ownership,
   Report,
   RoomType,
 } from './reportTypes'
@@ -54,6 +52,18 @@ type ReportHistoryItem = {
   images: UploadImage[]
 }
 
+type AssessmentMode = {
+  id: 'whole' | 'sleep' | 'wealth'
+  title: string
+  subtitle: string
+  icon: LucideIcon
+  roomType: RoomType
+  goals: LifeGoal[]
+  concerns: Concern[]
+  prompt: string
+  result: string
+}
+
 const HISTORY_KEY = 'home-fengshui-report-history'
 const MAX_HISTORY_ITEMS = 12
 const MAX_IMAGE_SIDE = 1600
@@ -66,51 +76,6 @@ const roomOptions: Array<{ value: RoomType; label: string; hint: string }> = [
   { value: 'study', label: '书房', hint: '书桌、专注、采光' },
   { value: 'entry', label: '玄关', hint: '入户、缓冲、收纳' },
   { value: 'whole', label: '整屋', hint: '多空间综合评估' },
-]
-
-const orientationOptions: Array<{ value: Orientation; label: string }> = [
-  { value: 'unknown', label: '不确定' },
-  { value: 'south', label: '坐北朝南/南向' },
-  { value: 'north', label: '北向' },
-  { value: 'east', label: '东向' },
-  { value: 'west', label: '西向' },
-  { value: 'southeast', label: '东南' },
-  { value: 'southwest', label: '西南' },
-  { value: 'northeast', label: '东北' },
-  { value: 'northwest', label: '西北' },
-]
-
-const concernOptions: Array<{ value: Concern; label: string }> = [
-  { value: 'airflow', label: '通风' },
-  { value: 'lighting', label: '采光' },
-  { value: 'privacy', label: '隐私' },
-  { value: 'clutter', label: '杂乱' },
-  { value: 'sleep', label: '睡眠' },
-  { value: 'wealth', label: '财位' },
-  { value: 'health', label: '健康' },
-]
-
-const goalOptions: Array<{ value: LifeGoal; label: string }> = [
-  { value: 'wealth', label: '求财' },
-  { value: 'health', label: '健康' },
-  { value: 'relationship', label: '夫妻关系' },
-  { value: 'career', label: '事业' },
-  { value: 'study', label: '孩子学习' },
-  { value: 'sleep', label: '睡眠' },
-  { value: 'comfort', label: '整体舒适度' },
-]
-
-const genderOptions: Array<{ value: Gender; label: string }> = [
-  { value: 'unknown', label: '不填写' },
-  { value: 'male', label: '男' },
-  { value: 'female', label: '女' },
-  { value: 'other', label: '其他' },
-]
-
-const ownershipOptions: Array<{ value: Ownership; label: string }> = [
-  { value: 'unknown', label: '不确定' },
-  { value: 'own', label: '自住房' },
-  { value: 'rent', label: '租房' },
 ]
 
 const defaultForm: FormState = {
@@ -134,6 +99,42 @@ const defaultForm: FormState = {
   notes: '',
 }
 
+const assessmentModes: AssessmentMode[] = [
+  {
+    id: 'whole',
+    title: '全屋体检',
+    subtitle: '动线 / 采光 / 收纳 / 安全',
+    icon: Home,
+    roomType: 'whole',
+    goals: ['comfort', 'health'],
+    concerns: ['airflow', 'lighting', 'clutter'],
+    prompt: '适合第一次使用，快速找出家里最该先调整的 3 个问题。',
+    result: '输出全屋评分、优先改动顺序和低成本方案。',
+  },
+  {
+    id: 'sleep',
+    title: '睡眠卧室',
+    subtitle: '床位 / 门冲 / 镜面 / 光线',
+    icon: Sofa,
+    roomType: 'bedroom',
+    goals: ['sleep', 'health'],
+    concerns: ['sleep', 'privacy', 'lighting'],
+    prompt: '适合睡眠差、卧室压抑、床位不确定的用户。',
+    result: '输出床位、床头、镜面、灯光和收纳建议。',
+  },
+  {
+    id: 'wealth',
+    title: '财位事业',
+    subtitle: '客厅 / 书桌 / 厨房 / 明堂',
+    icon: Compass,
+    roomType: 'living',
+    goals: ['wealth', 'career'],
+    concerns: ['wealth', 'airflow', 'clutter'],
+    prompt: '适合想看财位、事业位、办公区和客厅格局的用户。',
+    result: '输出财位逻辑、事业区布置和可执行调整。',
+  },
+]
+
 const severityCopy: Record<Finding['severity'], string> = {
   high: '优先处理',
   medium: '建议调整',
@@ -154,6 +155,8 @@ function App() {
   const [form, setForm] = useState<FormState>(defaultForm)
   const [report, setReport] = useState<Report | null>(null)
   const [history, setHistory] = useState<ReportHistoryItem[]>(() => loadHistory())
+  const [selectedModeId, setSelectedModeId] = useState<AssessmentMode['id']>('whole')
+  const [showAdvanced, setShowAdvanced] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [isProcessingImages, setIsProcessingImages] = useState(false)
   const [error, setError] = useState('')
@@ -166,6 +169,21 @@ function App() {
     () => roomOptions.find((room) => room.value === form.roomType) ?? roomOptions[0],
     [form.roomType],
   )
+
+  const selectedMode = useMemo(
+    () => assessmentModes.find((mode) => mode.id === selectedModeId) ?? assessmentModes[0],
+    [selectedModeId],
+  )
+
+  const applyMode = (mode: AssessmentMode) => {
+    setSelectedModeId(mode.id)
+    setForm((current) => ({
+      ...current,
+      roomType: mode.roomType,
+      goals: mode.goals,
+      concerns: mode.concerns,
+    }))
+  }
 
   const handleFiles = async (files: FileList | null) => {
     if (!files?.length) return
@@ -194,28 +212,6 @@ function App() {
 
   const removeImage = (id: string) => {
     setImages((current) => current.filter((image) => image.id !== id))
-  }
-
-  const toggleConcern = (value: Concern) => {
-    setForm((current) => {
-      const hasConcern = current.concerns.includes(value)
-      return {
-        ...current,
-        concerns: hasConcern
-          ? current.concerns.filter((concern) => concern !== value)
-          : [...current.concerns, value],
-      }
-    })
-  }
-
-  const toggleGoal = (value: LifeGoal) => {
-    setForm((current) => {
-      const hasGoal = current.goals.includes(value)
-      return {
-        ...current,
-        goals: hasGoal ? current.goals.filter((goal) => goal !== value) : [...current.goals, value],
-      }
-    })
   }
 
   const generateReport = async (event: FormEvent) => {
@@ -279,6 +275,10 @@ function App() {
   const openHistoryItem = (item: ReportHistoryItem) => {
     setImages(item.images)
     setForm(item.form)
+    const modeFromHistory =
+      assessmentModes.find((mode) => mode.roomType === item.form.roomType && mode.goals.every((goal) => item.form.goals.includes(goal))) ??
+      assessmentModes[0]
+    setSelectedModeId(modeFromHistory.id)
     setReport(item.report)
     setError('')
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -299,7 +299,7 @@ function App() {
         <div className="hero-image" aria-hidden="true">
           <div className="hero-photo-badge">
             <Camera size={16} />
-            <span>先拍 5-15 张家里照片</span>
+            <span>先拍 3-6 张家里照片</span>
           </div>
           <div className="hero-room">
             <span className="hero-window" />
@@ -400,242 +400,126 @@ function App() {
           )}
         </section>
 
-        <section className="tool-section">
+        <section className="tool-section mode-section">
           <div className="section-heading">
             <span className="step-badge">2</span>
             <div>
-              <h2>客户与房屋信息</h2>
-              <p>命理信息只做个性化参考，核心判断仍以照片、动线、采光和安全为准。</p>
+              <h2>选择检测模式</h2>
+              <p>只保留 3 个入口，点一个就自动配置分析目标。</p>
             </div>
           </div>
 
-          <div className="field-block">
-            <label>分析空间</label>
-            <div className="room-grid">
-              {roomOptions.map((room) => (
+          <div className="mode-grid">
+            {assessmentModes.map((mode) => {
+              const ModeIcon = mode.icon
+              const isSelected = selectedModeId === mode.id
+              return (
                 <button
-                  key={room.value}
+                  key={mode.id}
                   type="button"
-                  className={form.roomType === room.value ? 'selected' : ''}
-                  onClick={() => setForm((current) => ({ ...current, roomType: room.value }))}
+                  className={isSelected ? 'selected' : ''}
+                  onClick={() => applyMode(mode)}
                 >
-                  <Home size={17} aria-hidden="true" />
-                  <span>{room.label}</span>
-                  <small>{room.hint}</small>
+                  <span className="mode-orbit">
+                    <ModeIcon size={22} aria-hidden="true" />
+                  </span>
+                  <span className="mode-copy">
+                    <strong>{mode.title}</strong>
+                    <small>{mode.subtitle}</small>
+                  </span>
                 </button>
-              ))}
-            </div>
+              )
+            })}
           </div>
 
-          <div className="two-column">
-            <label className="field">
-              <span>主要朝向</span>
-              <select
-                value={form.orientation}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, orientation: event.target.value as Orientation }))
-                }
-              >
-                {orientationOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="field">
-              <span>面积</span>
-              <input
-                value={form.homeSize}
-                inputMode="decimal"
-                placeholder="例如 89㎡"
-                onChange={(event) => setForm((current) => ({ ...current, homeSize: event.target.value }))}
-              />
-            </label>
-          </div>
-
-          <div className="two-column">
-            <label className="field">
-              <span>大门朝向</span>
-              <input
-                value={form.doorDirection}
-                placeholder="例如 朝南 / 约 178°"
-                onChange={(event) => setForm((current) => ({ ...current, doorDirection: event.target.value }))}
-              />
-            </label>
-
-            <label className="field">
-              <span>楼层</span>
-              <input
-                value={form.floor}
-                placeholder="例如 12/28 层"
-                onChange={(event) => setForm((current) => ({ ...current, floor: event.target.value }))}
-              />
-            </label>
-          </div>
-
-          <div className="two-column">
-            <label className="field">
-              <span>入住年份</span>
-              <input
-                value={form.moveInYear}
-                inputMode="numeric"
-                placeholder="例如 2022"
-                onChange={(event) => setForm((current) => ({ ...current, moveInYear: event.target.value }))}
-              />
-            </label>
-
-            <label className="field">
-              <span>居住类型</span>
-              <select
-                value={form.ownership}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, ownership: event.target.value as Ownership }))
-                }
-              >
-                {ownershipOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <div className="mode-readout">
+            <span>当前模式</span>
+            <strong>{selectedMode.title}</strong>
+            <p>{selectedMode.prompt}</p>
+            <small>{selectedMode.result}</small>
           </div>
 
           <label className="field">
-            <span>常住人数</span>
-            <input
-              value={form.people}
-              placeholder="例如 两大一小 / 独居 / 与父母同住"
-              onChange={(event) => setForm((current) => ({ ...current, people: event.target.value }))}
-            />
-          </label>
-
-          <label className="field">
-            <span>家庭情况</span>
-            <input
-              value={form.household}
-              placeholder="例如 三口之家，孩子上小学；父母偶尔同住"
-              onChange={(event) => setForm((current) => ({ ...current, household: event.target.value }))}
-            />
-          </label>
-
-          <div className="two-column">
-            <label className="field">
-              <span>谁住主卧</span>
-              <input
-                value={form.masterBedroomUser}
-                placeholder="例如 夫妻 / 老人 / 自己"
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, masterBedroomUser: event.target.value }))
-                }
-              />
-            </label>
-
-            <label className="check-field">
-              <input
-                type="checkbox"
-                checked={form.hasEldersOrChildren}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, hasEldersOrChildren: event.target.checked }))
-                }
-              />
-              <span>有老人或小孩常住</span>
-            </label>
-          </div>
-
-          <div className="field-block">
-            <label>主要诉求</label>
-            <div className="chip-grid">
-              {goalOptions.map((goal) => (
-                <button
-                  key={goal.value}
-                  type="button"
-                  className={form.goals.includes(goal.value) ? 'selected' : ''}
-                  onClick={() => toggleGoal(goal.value)}
-                >
-                  {goal.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="field-block subdued-block">
-            <label>命理匹配参考</label>
-            <p>八宅、五行和颜色材质建议会参考这里；如果没有出生时间或出生地，只做弱参考。</p>
-            <div className="two-column">
-              <label className="field">
-                <span>出生日期</span>
-                <input
-                  type="date"
-                  value={form.birthDate}
-                  onChange={(event) => setForm((current) => ({ ...current, birthDate: event.target.value }))}
-                />
-              </label>
-
-              <label className="field">
-                <span>出生时间</span>
-                <input
-                  type="time"
-                  value={form.birthTime}
-                  onChange={(event) => setForm((current) => ({ ...current, birthTime: event.target.value }))}
-                />
-              </label>
-            </div>
-            <div className="two-column">
-              <label className="field">
-                <span>性别</span>
-                <select
-                  value={form.gender}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, gender: event.target.value as Gender }))
-                  }
-                >
-                  {genderOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="field">
-                <span>出生地</span>
-                <input
-                  value={form.birthPlace}
-                  placeholder="例如 广东广州"
-                  onChange={(event) => setForm((current) => ({ ...current, birthPlace: event.target.value }))}
-                />
-              </label>
-            </div>
-          </div>
-
-          <div className="field-block">
-            <label>重点关注</label>
-            <div className="chip-grid">
-              {concernOptions.map((concern) => (
-                <button
-                  key={concern.value}
-                  type="button"
-                  className={form.concerns.includes(concern.value) ? 'selected' : ''}
-                  onClick={() => toggleConcern(concern.value)}
-                >
-                  {concern.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <label className="field">
-            <span>补充描述</span>
+            <span>一句话补充</span>
             <textarea
               value={form.notes}
-              rows={4}
-              placeholder="例如 入户正对阳台、卧室睡眠不好、厨房油烟重、想保留现有家具等"
+              rows={3}
+              placeholder="例如：卧室睡不好；入户正对阳台；想看财位；家里有小孩老人。"
               onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))}
             />
           </label>
+
+          <button type="button" className="advanced-toggle" onClick={() => setShowAdvanced((value) => !value)}>
+            <ChevronRight className={showAdvanced ? 'open' : ''} size={18} aria-hidden="true" />
+            {showAdvanced ? '收起精准信息' : '可选：补充精准信息'}
+          </button>
+
+          {showAdvanced && (
+            <div className="advanced-panel">
+              <div className="two-column">
+                <label className="field">
+                  <span>大门朝向</span>
+                  <input
+                    value={form.doorDirection}
+                    placeholder="例如 朝南 / 约 178°"
+                    onChange={(event) => setForm((current) => ({ ...current, doorDirection: event.target.value }))}
+                  />
+                </label>
+
+                <label className="field">
+                  <span>入住年份</span>
+                  <input
+                    value={form.moveInYear}
+                    inputMode="numeric"
+                    placeholder="例如 2022"
+                    onChange={(event) => setForm((current) => ({ ...current, moveInYear: event.target.value }))}
+                  />
+                </label>
+              </div>
+
+              <div className="two-column">
+                <label className="field">
+                  <span>常住情况</span>
+                  <input
+                    value={form.people}
+                    placeholder="例如 两大一小 / 独居"
+                    onChange={(event) => setForm((current) => ({ ...current, people: event.target.value }))}
+                  />
+                </label>
+
+                <label className="check-field">
+                  <input
+                    type="checkbox"
+                    checked={form.hasEldersOrChildren}
+                    onChange={(event) =>
+                      setForm((current) => ({ ...current, hasEldersOrChildren: event.target.checked }))
+                    }
+                  />
+                  <span>有老人或小孩</span>
+                </label>
+              </div>
+
+              <div className="two-column">
+                <label className="field">
+                  <span>出生日期</span>
+                  <input
+                    type="date"
+                    value={form.birthDate}
+                    onChange={(event) => setForm((current) => ({ ...current, birthDate: event.target.value }))}
+                  />
+                </label>
+
+                <label className="field">
+                  <span>出生时间</span>
+                  <input
+                    type="time"
+                    value={form.birthTime}
+                    onChange={(event) => setForm((current) => ({ ...current, birthTime: event.target.value }))}
+                  />
+                </label>
+              </div>
+            </div>
+          )}
         </section>
 
         {error && (
