@@ -1538,6 +1538,27 @@ label:focus-within {
   gap: 8px;
 }
 
+.version-strip {
+  align-items: center;
+  background: linear-gradient(90deg, rgba(255, 61, 220, 0.18), rgba(23, 237, 255, 0.12));
+  border: 1px solid rgba(255, 190, 91, 0.32);
+  border-radius: 999px;
+  color: #ffdf9e;
+  display: inline-flex;
+  gap: 8px;
+  justify-self: start;
+  padding: 6px 10px;
+}
+
+.version-strip span {
+  color: #d8fffb;
+  font-size: 12px;
+}
+
+.version-strip strong {
+  font-size: 12px;
+}
+
 .hook-grid span,
 .flow-steps span,
 .scan-tags span,

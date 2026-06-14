@@ -307,6 +307,10 @@ function App() {
         <section className="hero-panel scanner-hero" id="upload-section">
           <div className="hero-copy">
             <p className="eyebrow">玄学逻辑 × 科学检测</p>
+            <div className="version-strip" aria-label="当前版本">
+              <span>赛博测试版</span>
+              <strong>v2026.06.14-2</strong>
+            </div>
             <h1>先拍家里现状，看看空间哪里在偷偷消耗你</h1>
             <p className="hero-lead">
               用传统风水的语言抓痛点，用建筑动线、采光通风、环境心理和安全规则做解释。你不用懂术语，上传 3-6 张照片，系统会直接告诉你先改哪里、为什么、怎么改、花不花钱。
